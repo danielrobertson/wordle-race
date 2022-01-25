@@ -1,32 +1,33 @@
+import { useState } from "react";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import useWindowDimensions from "../hooks/useWindowDimensions";
+import GridRow from "../components/GridRow";
 
-const WORD_LENGTH = 5;
 const ATTEMPTS = 6;
 
 export default function Home() {
   const [guesses, setGuesses] = useState<string[]>([]);
-  const [currentGuess, setCurrentGuess] = useState<string[]>([]);
   const [hasWon, setHasWon] = useState(false);
+  const { width, height } = useWindowDimensions();
 
+  // TODO generate and persist to server for room
   const targetWord = "FUBAR";
 
-  const handleChange = (event: any, guessIdx: number, letterIdx: number) => {
-    const updatedCurrentGuess = [...currentGuess];
-    updatedCurrentGuess[letterIdx] = event.target.value;
-    setCurrentGuess(updatedCurrentGuess);
-  };
-
   const handleGuess = () => {
-    const guess = currentGuess.join("").toLowerCase();
-    if (guess === targetWord.toLowerCase()) {
+    const guess = guesses[guesses.length - 1];
+    if (guess?.toLowerCase() === targetWord.toLowerCase()) {
       setHasWon(true);
       // TODO submit win to server
     } else {
-      console.log("lose");
+      console.log("incorrect");
       // TODO update grid with validation results
     }
-    setGuesses([...guesses, guess]);
+  };
+
+  const onChange = (word: string) => {
+    console.log("🚀 ~ file: index.tsx ~ line 32 ~ onChange ~ word", word);
+    setGuesses([...guesses, word]);
   };
 
   return (
@@ -40,17 +41,14 @@ export default function Home() {
       </div>
 
       <main className="flex flex-col items-center w-full flex-1 mx-10 m-20 text-center">
-        {hasWon && <div className="absolute text-3xl -mt-12">You won! 🏆</div>}
+        {hasWon && (
+          <>
+            <Confetti width={width} height={height} recycle={false} />
+            <div className="absolute text-3xl -mt-12">You won! 🏆</div>
+          </>
+        )}
         {Array.from(Array(ATTEMPTS)).map((_, guessIdx) => (
-          <div className="flex" key={`guess-${guessIdx}`}>
-            {Array.from(Array(WORD_LENGTH)).map((_, letterIdx) => (
-              <input
-                className="inline border border-solid text-center border-pink-500 bg-inherit p-2 m-1 w-12 uppercase font-semibold text-2xl"
-                onChange={(event) => handleChange(event, guessIdx, letterIdx)}
-                maxLength={1}
-              />
-            ))}
-          </div>
+          <GridRow key={`guess-${guessIdx}`} onChange={onChange} />
         ))}
 
         <button
