@@ -24,13 +24,11 @@ export default function Home() {
       console.log("incorrect");
       // TODO update grid with validation results
     }
+
     setGuesses([...guesses, guess]);
   };
 
-  const onChange = (word: string) => {
-    console.log("🚀 ~ file: index.tsx ~ line 32 ~ onChange ~ word", word);
-    setCurrentGuess(word);
-  };
+  const onChange = (word: string) => setCurrentGuess(word);
 
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
