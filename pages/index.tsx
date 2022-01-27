@@ -1,23 +1,29 @@
 import { useState } from "react";
 import Head from "next/head";
 import Confetti from "react-confetti";
+import cloneDeep from "lodash/cloneDeep";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import Keyboard from "../components/Keyboard";
-import { ATTEMPTS, WORD_LENGTH } from "../components/constants";
+import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
 
 export default function Home() {
-  const [guesses, setGuesses] = useState<string[]>([]);
-  const [currentGuessLetters, setCurrentGuessLetters] = useState<string[]>(
-    Array(WORD_LENGTH).fill("")
+  const [guesses, setGuesses] = useState<string[][]>(
+    Array(ATTEMPTS)
+      .fill(null)
+      .map((_) => Array(WORD_LENGTH).fill(null))
   );
+
+  const [currentCursorPosition, setCurrentCursorPosition] = useState<number>(0);
+  const [currentGuessPosition, setCurrentGuessPosition] = useState<number>(0);
   const [hasWon, setHasWon] = useState(false);
   const { width, height } = useWindowDimensions();
+  console.log("🚀 ~ file: index.tsx ~ line 15 ~ Home ~ width", width);
 
   // TODO generate and persist to server for room
   const targetWord = "FUBAR";
 
   const handleGuess = () => {
-    const guess = currentGuessLetters?.join("").toLowerCase();
+    const guess = "";
     if (guess === targetWord.toLowerCase()) {
       setHasWon(true);
       // TODO submit win to server
@@ -25,8 +31,23 @@ export default function Home() {
       console.log("incorrect");
       // TODO update grid with validation results
     }
+  };
 
-    setGuesses([...guesses, guess]);
+  const handleKeyboardPress = (key: string) => {
+    if (key === SpecialKeys.ENTER) {
+      console.log("enter");
+    } else if (key === SpecialKeys.DELETE && currentCursorPosition > 0) {
+    } else {
+      if (currentCursorPosition < WORD_LENGTH) {
+        setGuesses((currentGuesses) => {
+          let updatedGuesses = cloneDeep(currentGuesses);
+          updatedGuesses[currentGuessPosition][currentCursorPosition] = key;
+          return updatedGuesses;
+        });
+
+        setCurrentCursorPosition((current) => 1 + current);
+      }
+    }
   };
 
   return (
@@ -36,34 +57,30 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="py-2 mx-10 text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
-        Wordle Race 🏎
+        Wordle Race
       </div>
 
-      <main className="flex flex-col items-center w-full flex-1 mx-10 m-20 text-center">
+      <main className="flex flex-col items-center w-full flex-1 mx-10 m-14 text-center">
         {hasWon && (
           <>
             <Confetti width={width} height={height} recycle={false} />
             <div className="absolute text-3xl -mt-12">You won! 🏆</div>
           </>
         )}
-        {Array.from(Array(ATTEMPTS)).map((_, guessIdx) => (
+        {guesses.map((guessRow, guessIdx) => (
           <div className="flex" key={`guess-${guessIdx}`}>
-            {currentGuessLetters.map((letter, letterIdx) => (
+            {guessRow.map((guessLetter, letterIdx) => (
               <div
-                className="inline border-2 border-solid text-center border-slate-600 bg-inherit py-6 m-0.5 w-12 uppercase font-semibold text-2xl"
+                className="flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-12 h-12 uppercase font-semibold text-2xl "
                 key={`letter-${letterIdx}`}
               >
-                {letter}
+                {guessLetter}
               </div>
             ))}
           </div>
         ))}
 
-        <Keyboard
-          onKey={(key) => {
-            console.log("Keyboard", key);
-          }}
-        />
+        <Keyboard onKey={handleKeyboardPress} />
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
