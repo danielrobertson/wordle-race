@@ -2,13 +2,14 @@ import { useState } from "react";
 import Head from "next/head";
 import Confetti from "react-confetti";
 import useWindowDimensions from "../hooks/useWindowDimensions";
-import GridRow from "../components/GridRow";
-
-const ATTEMPTS = 6;
+import Keyboard from "../components/Keyboard";
+import { ATTEMPTS, WORD_LENGTH } from "../components/constants";
 
 export default function Home() {
   const [guesses, setGuesses] = useState<string[]>([]);
-  const [currentGuess, setCurrentGuess] = useState<string>("");
+  const [currentGuessLetters, setCurrentGuessLetters] = useState<string[]>(
+    Array(WORD_LENGTH).fill("")
+  );
   const [hasWon, setHasWon] = useState(false);
   const { width, height } = useWindowDimensions();
 
@@ -16,7 +17,7 @@ export default function Home() {
   const targetWord = "FUBAR";
 
   const handleGuess = () => {
-    const guess = currentGuess?.toLowerCase();
+    const guess = currentGuessLetters?.join("").toLowerCase();
     if (guess === targetWord.toLowerCase()) {
       setHasWon(true);
       // TODO submit win to server
@@ -28,8 +29,6 @@ export default function Home() {
     setGuesses([...guesses, guess]);
   };
 
-  const onChange = (word: string) => setCurrentGuess(word);
-
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
       <Head>
@@ -37,7 +36,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="py-2 mx-10 text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
-        Wordle Race
+        Wordle Race 🏎
       </div>
 
       <main className="flex flex-col items-center w-full flex-1 mx-10 m-20 text-center">
@@ -48,15 +47,23 @@ export default function Home() {
           </>
         )}
         {Array.from(Array(ATTEMPTS)).map((_, guessIdx) => (
-          <GridRow key={`guess-${guessIdx}`} onChange={onChange} />
+          <div className="flex" key={`guess-${guessIdx}`}>
+            {currentGuessLetters.map((letter, letterIdx) => (
+              <div
+                className="inline border-2 border-solid text-center border-slate-600 bg-inherit py-6 m-0.5 w-12 uppercase font-semibold text-2xl"
+                key={`letter-${letterIdx}`}
+              >
+                {letter}
+              </div>
+            ))}
+          </div>
         ))}
 
-        <button
-          className="bg-gray-600 px-2 mt-5 rounded-sm uppercase"
-          onClick={handleGuess}
-        >
-          Enter
-        </button>
+        <Keyboard
+          onKey={(key) => {
+            console.log("Keyboard", key);
+          }}
+        />
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
