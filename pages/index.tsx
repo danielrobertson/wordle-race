@@ -19,21 +19,18 @@ export default function Home() {
   const { width, height } = useWindowDimensions();
 
   // TODO generate and persist to server for room
-  const targetWord = "FUBAR";
-
-  const handleGuess = () => {
-    const guess = "";
-    if (guess === targetWord.toLowerCase()) {
-      setHasWon(true);
-      // TODO submit win to server
-    } else {
-      console.log("incorrect");
-      // TODO update grid with validation results
-    }
-  };
+  const targetWord = "fubar";
 
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
+      const word = guesses[currentGuessPosition].join("");
+      if (word.length === WORD_LENGTH) {
+        if (word === targetWord) {
+          setHasWon(true);
+        } else {
+          console.log("todo validations");
+        }
+      }
     } else if (key === "" && currentCursorPosition > 0) {
       setGuesses((currentGuesses) => {
         let updatedGuesses = cloneDeep(currentGuesses);
