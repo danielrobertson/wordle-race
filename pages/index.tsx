@@ -57,8 +57,8 @@ export default function Home() {
         <title>Wordle Race</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="py-2 mx-10 text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
-        Wordle Race
+      <div className="py-2 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
+        Wordle Race 🏎
       </div>
 
       <main className="flex flex-col items-center w-full flex-1 mx-10 m-14 text-center">
