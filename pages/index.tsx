@@ -17,7 +17,6 @@ export default function Home() {
   const [currentGuessPosition, setCurrentGuessPosition] = useState<number>(0);
   const [hasWon, setHasWon] = useState(false);
   const { width, height } = useWindowDimensions();
-  console.log("🚀 ~ file: index.tsx ~ line 15 ~ Home ~ width", width);
 
   // TODO generate and persist to server for room
   const targetWord = "FUBAR";
@@ -35,8 +34,13 @@ export default function Home() {
 
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
-      console.log("enter");
-    } else if (key === SpecialKeys.DELETE && currentCursorPosition > 0) {
+    } else if (key === "" && currentCursorPosition > 0) {
+      setGuesses((currentGuesses) => {
+        let updatedGuesses = cloneDeep(currentGuesses);
+        updatedGuesses[currentGuessPosition][currentCursorPosition - 1] = "";
+        return updatedGuesses;
+      });
+      setCurrentCursorPosition((current) => current - 1);
     } else {
       if (currentCursorPosition < WORD_LENGTH) {
         setGuesses((currentGuesses) => {
