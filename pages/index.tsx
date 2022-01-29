@@ -1,10 +1,10 @@
-import { useState } from "react";
-import Head from "next/head";
-import Confetti from "react-confetti";
 import cloneDeep from "lodash/cloneDeep";
-import useWindowDimensions from "../hooks/useWindowDimensions";
-import Keyboard from "../components/Keyboard";
+import Head from "next/head";
+import { useState } from "react";
+import Confetti from "react-confetti";
 import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
+import Keyboard from "../components/Keyboard";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
   const [guesses, setGuesses] = useState<string[][]>(
@@ -57,7 +57,7 @@ export default function Home() {
         <title>Wordle Race</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="py-2 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
+      <div className="py-3 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
         Wordle Race 🏎
       </div>
 
@@ -72,7 +72,7 @@ export default function Home() {
           <div className="flex" key={`guess-${guessIdx}`}>
             {guessRow.map((guessLetter, letterIdx) => (
               <div
-                className="flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-12 h-12 uppercase font-semibold text-2xl "
+                className="flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-16 h-16 uppercase font-semibold text-3xl "
                 key={`letter-${letterIdx}`}
               >
                 {guessLetter}
