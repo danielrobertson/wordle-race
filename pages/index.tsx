@@ -1,6 +1,7 @@
+import classNames from "classnames";
 import cloneDeep from "lodash/cloneDeep";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
 import Keyboard from "../components/Keyboard";
@@ -12,10 +13,14 @@ export default function Home() {
       .fill(null)
       .map((_) => Array(WORD_LENGTH).fill(null))
   );
-  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
+  const [submittedGuesses, setSubmittedGuesses] = useState<string[]>([]);
   const [currentCursorPosition, setCurrentCursorPosition] = useState<number>(0);
   const [currentGuessPosition, setCurrentGuessPosition] = useState<number>(0);
   const [hasWon, setHasWon] = useState(false);
+  const [noContainsLetters, setNoContainsLetters] = useState<string[]>([]);
+  const [containsLetters, setContainsLetters] = useState<string[]>([]);
+  const [correctLetters, setCorrectLetters] = useState<string[]>([]);
+
   const { width, height } = useWindowDimensions();
 
   // TODO generate and persist to server for room
@@ -48,10 +53,10 @@ export default function Home() {
   const validateGuess = (guess: string[]) => {
     const word = guess.join("");
     if (word.length === WORD_LENGTH) {
+      setSubmittedGuesses([...submittedGuesses, word]);
       if (word === targetWord) {
         setHasWon(true);
       } else {
-        setGuessedLetters(guessedLetters.concat(guess));
         setCurrentGuessPosition((current) => 1 + current);
         setCurrentCursorPosition(0);
       }
@@ -59,6 +64,23 @@ export default function Home() {
       console.log("no op - not enough letters");
     }
   };
+
+  useEffect(() => {
+    console.log("submitted guesses ", submittedGuesses);
+    for (let guess of submittedGuesses) {
+      for (let i = 0; i < guess.length; i++) {
+        if (targetWord.includes(guess[i])) {
+          if (targetWord.indexOf(guess[i]) === i) {
+            setCorrectLetters((prev) => [...prev, guess[i]]);
+          } else {
+            setContainsLetters((prev) => [...prev, guess[i]]);
+          }
+        } else {
+          setNoContainsLetters((prev) => [...prev, guess[i]]);
+        }
+      }
+    }
+  }, [submittedGuesses, targetWord]);
 
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
@@ -74,18 +96,38 @@ export default function Home() {
         {hasWon && <Confetti width={width} height={height} recycle={false} />}
         {guesses.map((guessRow, guessIdx) => (
           <div className="flex" key={`guess-${guessIdx}`}>
-            {guessRow.map((guessLetter, letterIdx) => (
-              <div
-                className="flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-16 h-16 uppercase font-semibold text-3xl "
-                key={`letter-${letterIdx}`}
-              >
-                {guessLetter}
-              </div>
-            ))}
+            {guessRow.map((guessLetter, letterIdx) => {
+              const tileClasses = classNames(
+                "flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-16 h-16 uppercase font-semibold text-3xl",
+                {
+                  "bg-yellow-600 border-yellow-600":
+                    containsLetters.includes(guessLetter),
+                },
+                {
+                  "bg-zinc-800 border-zinc-800":
+                    noContainsLetters.includes(guessLetter),
+                },
+                {
+                  "bg-green-600 border-green-600":
+                    correctLetters.includes(guessLetter),
+                }
+              );
+
+              return (
+                <div className={tileClasses} key={`letter-${letterIdx}`}>
+                  {guessLetter}
+                </div>
+              );
+            })}
           </div>
         ))}
 
-        <Keyboard onKey={handleKeyboardPress} />
+        <Keyboard
+          onKey={handleKeyboardPress}
+          noContainsLetters={noContainsLetters}
+          containsLetters={containsLetters}
+          correctLetters={correctLetters}
+        />
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">

@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { SpecialKeys } from "./constants";
 import { deleteKeySvg } from "./DeleteKey";
 
 type Props = {
   onKey: (key: string) => void;
+  noContainsLetters: string[];
+  containsLetters: string[];
+  correctLetters: string[];
 };
 
-export default function Keyboard({ onKey }: Props) {
+export default function Keyboard({
+  onKey,
+  noContainsLetters,
+  containsLetters,
+  correctLetters,
+}: Props) {
   const keyRows = [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
     ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
@@ -27,9 +35,25 @@ export default function Keyboard({ onKey }: Props) {
         return (
           <div className={classes} key={`row-${rowIdx}`}>
             {row.map((key, idx) => {
+              const buttonClasses = classNames(
+                "grow letter bg-gray-600 px-2 py-4 mx-0.5 rounded-sm uppercase active:bg-gray-700",
+                {
+                  "bg-yellow-600":
+                    typeof key === "string" && containsLetters.includes(key),
+                },
+                {
+                  "bg-zinc-800":
+                    typeof key === "string" && noContainsLetters.includes(key),
+                },
+                {
+                  "bg-green-600":
+                    typeof key === "string" && correctLetters.includes(key),
+                }
+              );
+
               return (
                 <button
-                  className="grow letter bg-gray-600 px-2 py-4 mx-0.5 rounded-sm uppercase active:bg-gray-700"
+                  className={buttonClasses}
                   onClick={handleClick}
                   key={`key-${idx}`}
                 >
