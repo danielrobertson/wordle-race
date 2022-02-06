@@ -17,7 +17,7 @@ export default function Keyboard({ onKey }: Props) {
   const handleClick = (event: any) => onKey(event.target.textContent);
 
   return (
-    <div className="mt-8 px-1 w-full md:max-w-min">
+    <div className="mt-2 md:mt-8 px-1 w-full md:max-w-min">
       {keyRows.map((row, rowIdx) => {
         const classes = classNames(
           { "mx-3": rowIdx === 1 }, // indent second keyboard row like irl

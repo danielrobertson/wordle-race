@@ -61,7 +61,7 @@ export default function Home() {
         Wordle Race 🏎
       </div>
 
-      <main className="flex flex-col items-center w-full flex-1 mx-14 my-14 text-center">
+      <main className="flex flex-col items-center w-full flex-1 mx-14 mt-2 md:mt-8 text-center">
         {hasWon && (
           <>
             <Confetti width={width} height={height} recycle={false} />
