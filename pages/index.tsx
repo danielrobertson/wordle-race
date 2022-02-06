@@ -12,7 +12,7 @@ export default function Home() {
       .fill(null)
       .map((_) => Array(WORD_LENGTH).fill(null))
   );
-
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [currentCursorPosition, setCurrentCursorPosition] = useState<number>(0);
   const [currentGuessPosition, setCurrentGuessPosition] = useState<number>(0);
   const [hasWon, setHasWon] = useState(false);
@@ -23,14 +23,8 @@ export default function Home() {
 
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
-      const word = guesses[currentGuessPosition].join("");
-      if (word.length === WORD_LENGTH) {
-        if (word === targetWord) {
-          setHasWon(true);
-        } else {
-          console.log("todo validations");
-        }
-      }
+      const guess = guesses[currentGuessPosition];
+      validateGuess(guess);
     } else if (key === "" && currentCursorPosition > 0) {
       setGuesses((currentGuesses) => {
         let updatedGuesses = cloneDeep(currentGuesses);
@@ -51,6 +45,21 @@ export default function Home() {
     }
   };
 
+  const validateGuess = (guess: string[]) => {
+    const word = guess.join("");
+    if (word.length === WORD_LENGTH) {
+      if (word === targetWord) {
+        setHasWon(true);
+      } else {
+        setGuessedLetters(guessedLetters.concat(guess));
+        setCurrentGuessPosition((current) => 1 + current);
+        setCurrentCursorPosition(0);
+      }
+    } else {
+      console.log("no op - not enough letters");
+    }
+  };
+
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
       <Head>
@@ -62,12 +71,7 @@ export default function Home() {
       </div>
 
       <main className="flex flex-col items-center w-full flex-1 mx-14 mt-2 md:mt-8 text-center">
-        {hasWon && (
-          <>
-            <Confetti width={width} height={height} recycle={false} />
-            <div className="absolute text-3xl -mt-12">You won! 🏆</div>
-          </>
-        )}
+        {hasWon && <Confetti width={width} height={height} recycle={false} />}
         {guesses.map((guessRow, guessIdx) => (
           <div className="flex" key={`guess-${guessIdx}`}>
             {guessRow.map((guessLetter, letterIdx) => (
