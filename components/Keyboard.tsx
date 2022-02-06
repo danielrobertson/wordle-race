@@ -17,7 +17,7 @@ export default function Keyboard({ onKey }: Props) {
   const handleClick = (event: any) => onKey(event.target.textContent);
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 px-1 w-full md:max-w-min">
       {keyRows.map((row, rowIdx) => {
         const classes = classNames(
           { "mx-3": rowIdx === 1 }, // indent second keyboard row like irl
@@ -29,7 +29,7 @@ export default function Keyboard({ onKey }: Props) {
             {row.map((key, idx) => {
               return (
                 <button
-                  className="grow letter bg-gray-600 px-2 py-3 mx-0.5 rounded-sm uppercase active:bg-gray-700"
+                  className="grow letter bg-gray-600 px-2 py-4 mx-0.5 rounded-sm uppercase active:bg-gray-700"
                   onClick={handleClick}
                   key={`key-${idx}`}
                 >
@@ -43,6 +43,12 @@ export default function Keyboard({ onKey }: Props) {
       <style jsx>{`
         .letter {
           min-width: 31px;
+        }
+
+        @media (min-width: 768px) {
+          .letter {
+            min-width: 50px;
+          }
         }
       `}</style>
     </div>

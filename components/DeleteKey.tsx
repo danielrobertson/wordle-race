@@ -2,7 +2,7 @@ import { SpecialKeys } from "./constants";
 
 export const deleteKeySvg = (
   <svg
-    className="-mr-1 -ml-1.5"
+    className="m-auto"
     width="30px"
     height="24px"
     viewBox="12 13 50 50"
