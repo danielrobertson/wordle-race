@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classNames from "classnames";
 import { SpecialKeys } from "./constants";
 import { deleteKeySvg } from "./DeleteKey";
@@ -25,7 +25,7 @@ export default function Keyboard({
   const handleClick = (event: any) => onKey(event.target.textContent);
 
   return (
-    <div className="mt-2 md:mt-8 px-1 w-full md:max-w-min">
+    <div className="mt-2 md:mt-8 mb-8 px-1 w-full md:max-w-min">
       {keyRows.map((row, rowIdx) => {
         const classes = classNames(
           { "mx-3": rowIdx === 1 }, // indent second keyboard row like irl
