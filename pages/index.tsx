@@ -94,32 +94,9 @@ export default function Home() {
 
       <main className="flex flex-col items-center w-full flex-1 mx-14 mt-2 md:mt-8 text-center">
         {hasWon && <Confetti width={width} height={height} recycle={false} />}
-        {guesses.map((guessRow, guessIdx) => (
-          <div className="flex" key={`guess-${guessIdx}`}>
-            {guessRow.map((guessLetter, letterIdx) => {
-              const tileClasses = classNames(
-                "flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-16 h-16 uppercase font-semibold text-3xl",
-                {
-                  "bg-yellow-600 border-yellow-600":
-                    containsLetters.includes(guessLetter),
-                },
-                {
-                  "bg-zinc-800 border-zinc-800":
-                    noContainsLetters.includes(guessLetter),
-                },
-                {
-                  "bg-green-600 border-green-600":
-                    correctLetters.includes(guessLetter),
-                }
-              );
 
-              return (
-                <div className={tileClasses} key={`letter-${letterIdx}`}>
-                  {guessLetter}
-                </div>
-              );
-            })}
-          </div>
+        {[...Array(ATTEMPTS)].map((_, i) => (
+          <Row guessIdx={i} key={uniqueId()} />
         ))}
 
         <Keyboard
