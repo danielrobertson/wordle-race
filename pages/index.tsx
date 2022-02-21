@@ -1,10 +1,11 @@
-import classNames from "classnames";
 import cloneDeep from "lodash/cloneDeep";
+import uniqueId from "lodash/uniqueId";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
 import Keyboard from "../components/Keyboard";
+import Row from "../components/Row";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
@@ -88,9 +89,9 @@ export default function Home() {
         <title>Wordle Race</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="py-3 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
+      <h1 className="py-3 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
         Wordle Race 🏎
-      </div>
+      </h1>
 
       <main className="flex flex-col items-center w-full flex-1 mx-14 mt-2 md:mt-8 text-center">
         {hasWon && <Confetti width={width} height={height} recycle={false} />}
