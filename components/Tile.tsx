@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import { useTile } from "../hooks/useTile";
 
 type Props = {
   guessIdx: number;
@@ -7,9 +7,11 @@ type Props = {
 };
 
 export default function Tile({ guessIdx, letterIdx }: Props) {
+  const { letter } = useTile(guessIdx, letterIdx);
+
   const tileClasses = classNames(
     "flex justify-center items-center border-2 border-solid text-center border-slate-600 bg-inherit m-0.5 w-16 h-16 uppercase font-semibold text-3xl"
   );
 
-  return <div className={tileClasses}>{letterIdx}</div>;
+  return <div className={tileClasses}>{letter}</div>;
 }
