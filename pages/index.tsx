@@ -6,18 +6,11 @@ import Confetti from "react-confetti";
 import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
 import Keyboard from "../components/Keyboard";
 import Row from "../components/Row";
+import { useGame } from "../contexts/GameContext";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
-  const [guesses, setGuesses] = useState<string[][]>(
-    Array(ATTEMPTS)
-      .fill(null)
-      .map((_) => Array(WORD_LENGTH).fill(null))
-  );
-  const [submittedGuesses, setSubmittedGuesses] = useState<string[]>([]);
-  const [currentCursorPosition, setCurrentCursorPosition] = useState<number>(0);
-  const [currentGuessPosition, setCurrentGuessPosition] = useState<number>(0);
-  const [hasWon, setHasWon] = useState(false);
+  const { addLetter, removeLetter, hasWon } = useGame();
   const [noContainsLetters, setNoContainsLetters] = useState<string[]>([]);
   const [containsLetters, setContainsLetters] = useState<string[]>([]);
   const [correctLetters, setCorrectLetters] = useState<string[]>([]);
@@ -29,59 +22,14 @@ export default function Home() {
 
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
-      const guess = guesses[currentGuessPosition];
-      validateGuess(guess);
-    } else if (key === "" && currentCursorPosition > 0) {
-      setGuesses((currentGuesses) => {
-        let updatedGuesses = cloneDeep(currentGuesses);
-        updatedGuesses[currentGuessPosition][currentCursorPosition - 1] = "";
-        return updatedGuesses;
-      });
-      setCurrentCursorPosition((current) => current - 1);
+      // validate guess
+    } else if (key === "") {
+      // backspace key
+      removeLetter();
     } else {
-      if (currentCursorPosition < WORD_LENGTH) {
-        setGuesses((currentGuesses) => {
-          let updatedGuesses = cloneDeep(currentGuesses);
-          updatedGuesses[currentGuessPosition][currentCursorPosition] = key;
-          return updatedGuesses;
-        });
-
-        setCurrentCursorPosition((current) => 1 + current);
-      }
+      addLetter(key);
     }
   };
-
-  const validateGuess = (guess: string[]) => {
-    const word = guess.join("");
-    if (word.length === WORD_LENGTH) {
-      setSubmittedGuesses([...submittedGuesses, word]);
-      if (word === targetWord) {
-        setHasWon(true);
-      } else {
-        setCurrentGuessPosition((current) => 1 + current);
-        setCurrentCursorPosition(0);
-      }
-    } else {
-      console.log("no op - not enough letters");
-    }
-  };
-
-  useEffect(() => {
-    console.log("submitted guesses ", submittedGuesses);
-    for (let guess of submittedGuesses) {
-      for (let i = 0; i < guess.length; i++) {
-        if (targetWord.includes(guess[i])) {
-          if (targetWord.indexOf(guess[i]) === i) {
-            setCorrectLetters((prev) => [...prev, guess[i]]);
-          } else {
-            setContainsLetters((prev) => [...prev, guess[i]]);
-          }
-        } else {
-          setNoContainsLetters((prev) => [...prev, guess[i]]);
-        }
-      }
-    }
-  }, [submittedGuesses, targetWord]);
 
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
