@@ -10,7 +10,7 @@ import { useGame } from "../contexts/GameContext";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
-  const { addLetter, removeLetter, hasWon } = useGame();
+  const { addLetter, removeLetter, hasWon, validateGuess } = useGame();
   const [noContainsLetters, setNoContainsLetters] = useState<string[]>([]);
   const [containsLetters, setContainsLetters] = useState<string[]>([]);
   const [correctLetters, setCorrectLetters] = useState<string[]>([]);
@@ -23,6 +23,7 @@ export default function Home() {
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
       // validate guess
+      validateGuess();
     } else if (key === "") {
       // backspace key
       removeLetter();

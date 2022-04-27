@@ -7,6 +7,7 @@ interface GameContextType {
   addLetter: (letter: string) => void;
   removeLetter: () => void;
   hasWon: boolean;
+  validateGuess: () => void;
 }
 
 export const GameContext = createContext<GameContextType>({
@@ -14,6 +15,7 @@ export const GameContext = createContext<GameContextType>({
   addLetter: () => {},
   removeLetter: () => {},
   hasWon: false,
+  validateGuess: () => {},
 });
 
 GameContext.displayName = "GameContext"; // used by react dev tools
@@ -58,8 +60,17 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     boardReducer,
     Array.from(Array(ATTEMPTS), () => [])
   );
+  console.log(
+    "🚀 ~ file: GameContext.tsx ~ line 58 ~ GameProvider ~ board",
+    board
+  );
 
   const [hasWon, setHasWon] = useState(false);
+
+  const validateGuess = () => {
+    // TODO validate guess
+    setHasWon(true);
+  };
 
   return (
     <GameContext.Provider
@@ -77,6 +88,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
           });
         },
         hasWon,
+        validateGuess,
       }}
     >
       {children}

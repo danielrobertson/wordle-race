@@ -23,6 +23,7 @@ export default function Keyboard({
   ];
 
   const handleClick = (event: any) => onKey(event.target.textContent);
+
   const handleKeydown = (event: KeyboardEvent) => {
     // TODO implement desktop keyboard support
     if (
