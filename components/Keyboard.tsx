@@ -23,11 +23,16 @@ export default function Keyboard({
   ];
 
   const handleClick = (event: any) => onKey(event.target.textContent);
-  const handleKeydown = () => {
+  const handleKeydown = (event: KeyboardEvent) => {
     // TODO implement desktop keyboard support
-    alert(
-      "Desktop keyboard support coming soon! Please click the on-screen keyboard instead"
-    );
+    if (
+      (event.key?.length === 1 && Boolean(event.key?.match(/[a-z]/i))) ||
+      event.key === "Backspace"
+    ) {
+      alert(
+        "Desktop keyboard support coming soon! Please click the on-screen keyboard instead"
+      );
+    }
   };
 
   useEffect(() => {

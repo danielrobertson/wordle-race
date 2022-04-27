@@ -34,11 +34,11 @@ export default function Home() {
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
       <Head>
-        <title>Wordle Race</title>
+        <title>Wordle Race 🏁</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <h1 className="py-3 mx-auto text-4xl font-bold tracking-wide uppercase text-center border-b border-stone-600">
-        Wordle Race 🏎
+        Wordle Race 🏁
       </h1>
 
       <main className="flex flex-col items-center w-full flex-1 mx-14 mt-2 md:mt-8 text-center">
