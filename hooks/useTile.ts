@@ -4,7 +4,8 @@ import { GameContext } from "../contexts/GameContext";
 export const useTile = (guessIdx: number, letterIdx: number) => {
   const { board } = useContext(GameContext);
   const row = board[guessIdx] || [];
-  const letter = row[letterIdx];
+  const { value, guessedContains, guessedCorrect, guessedWrong } =
+    row[letterIdx] || {};
 
-  return { letter };
+  return { value, guessedContains, guessedCorrect, guessedWrong };
 };

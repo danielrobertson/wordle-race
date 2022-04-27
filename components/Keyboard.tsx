@@ -5,17 +5,9 @@ import { deleteKeySvg } from "./DeleteKey";
 
 type Props = {
   onKey: (key: string) => void;
-  noContainsLetters: string[];
-  containsLetters: string[];
-  correctLetters: string[];
 };
 
-export default function Keyboard({
-  onKey,
-  noContainsLetters,
-  containsLetters,
-  correctLetters,
-}: Props) {
+export default function Keyboard({ onKey }: Props) {
   const keyRows = [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
     ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
@@ -40,6 +32,11 @@ export default function Keyboard({
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
   });
+
+  // TODO populate keyboard with hints
+  const noContainsLetters = [""];
+  const containsLetters = [""];
+  const correctLetters = [""];
 
   return (
     <div className="mt-2 md:mt-8 mb-8 px-1 w-full md:max-w-min">

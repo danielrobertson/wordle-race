@@ -11,10 +11,6 @@ import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
   const { addLetter, removeLetter, hasWon, validateGuess } = useGame();
-  const [noContainsLetters, setNoContainsLetters] = useState<string[]>([]);
-  const [containsLetters, setContainsLetters] = useState<string[]>([]);
-  const [correctLetters, setCorrectLetters] = useState<string[]>([]);
-
   const { width, height } = useWindowDimensions();
 
   const handleKeyboardPress = (key: string) => {
@@ -46,12 +42,7 @@ export default function Home() {
           <Row guessIdx={i} key={uniqueId()} />
         ))}
 
-        <Keyboard
-          onKey={handleKeyboardPress}
-          noContainsLetters={noContainsLetters}
-          containsLetters={containsLetters}
-          correctLetters={correctLetters}
-        />
+        <Keyboard onKey={handleKeyboardPress} />
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">

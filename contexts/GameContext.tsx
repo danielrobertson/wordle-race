@@ -6,10 +6,18 @@ import {
   useReducer,
   useState,
 } from "react";
+import { pathToFileURL } from "url";
 import { ATTEMPTS, WORD_LENGTH } from "../constants";
 
+type Tile = {
+  value: string;
+  guessedWrong: boolean;
+  guessedContains: boolean;
+  guessedCorrect: boolean;
+};
+
 interface GameContextType {
-  board: string[][];
+  board: Tile[][];
   addLetter: (letter: string) => void;
   removeLetter: () => void;
   hasWon: boolean;
@@ -40,13 +48,20 @@ type BoardReducerAction = {
   value: { guessIdx: number; letter?: string };
 };
 
-const boardReducer = (state: string[][], action: BoardReducerAction) => {
+const boardReducer = (state: Tile[][], action: BoardReducerAction) => {
   switch (action.type) {
     case BoardActionTypes.Add: {
       if (state[action.value.guessIdx].length < WORD_LENGTH) {
         let boardCopy = cloneDeep(state);
         if (action.value.letter) {
-          boardCopy[action.value.guessIdx].push(action.value.letter);
+          const newTile = {
+            value: action.value.letter,
+            guessedWrong: false,
+            guessedContains: false,
+            guessedCorrect: false,
+          } as Tile;
+
+          boardCopy[action.value.guessIdx].push(newTile);
         }
         return boardCopy;
       } else {
@@ -92,7 +107,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   });
 
   const validateGuess = () => {
-    const guess = board[guessIdx].join("");
+    const guess = board[guessIdx].map((tile) => tile.value).join("");
     if (guess.length === WORD_LENGTH) {
       // TODO color tiles with hints
       // TODO indicate if word is in word list or not
