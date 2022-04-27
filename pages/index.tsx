@@ -17,9 +17,6 @@ export default function Home() {
 
   const { width, height } = useWindowDimensions();
 
-  // TODO generate and persist to server for room
-  const targetWord = "fubar";
-
   const handleKeyboardPress = (key: string) => {
     if (key === SpecialKeys.ENTER) {
       // validate guess

@@ -1,5 +1,11 @@
 import cloneDeep from "lodash/cloneDeep";
-import { createContext, useContext, useReducer, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { ATTEMPTS, WORD_LENGTH } from "../constants";
 
 interface GameContextType {
@@ -64,13 +70,36 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     Array.from(Array(ATTEMPTS), () => [])
   );
 
+  // TODO generate and persist to server for room
+  const [targetWord, setTargetWord] = useState();
   const [guessIdx, setGuessIdx] = useState(0);
-
   const [hasWon, setHasWon] = useState(false);
 
+  useEffect(() => {
+    const fetchTargetWord = async () => {
+      // TODO migrate this to a server
+      // TODO consider replacing with www.wordsapi.com
+      const response = await fetch(
+        `https://random-word-api.herokuapp.com/word?length=${WORD_LENGTH}`
+      );
+      const data = await response.json();
+      setTargetWord(data[0]);
+    };
+
+    if (!targetWord) {
+      fetchTargetWord();
+    }
+  });
+
   const validateGuess = () => {
-    // TODO validate guess
-    setHasWon(true);
+    const guess = board[guessIdx].join("");
+    if (guess.length === WORD_LENGTH) {
+      // TODO color tiles with hints
+      // TODO indicate if word is in word list or not
+      if (guess === targetWord) {
+        setHasWon(true);
+      }
+    }
   };
 
   return (
