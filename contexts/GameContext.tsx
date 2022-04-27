@@ -29,24 +29,27 @@ enum BoardActionTypes {
   "Remove",
 }
 
-const boardReducer = (
-  state: string[][],
-  action: { type: BoardActionTypes; value?: string }
-) => {
+type BoardReducerAction = {
+  type: BoardActionTypes;
+  value: { guessIdx: number; letter?: string };
+};
+
+const boardReducer = (state: string[][], action: BoardReducerAction) => {
   switch (action.type) {
     case BoardActionTypes.Add: {
-      let boardCopy = cloneDeep(state);
-      // TODO put a type guard in here then remove this if-statement
-      if (action.value) {
-        // TODO remove hardcoded row 0
-        boardCopy[0].push(action.value);
+      if (state[action.value.guessIdx].length < WORD_LENGTH) {
+        let boardCopy = cloneDeep(state);
+        if (action.value.letter) {
+          boardCopy[action.value.guessIdx].push(action.value.letter);
+        }
+        return boardCopy;
+      } else {
+        return state;
       }
-      return boardCopy;
     }
     case BoardActionTypes.Remove: {
       let boardCopy = cloneDeep(state);
-      // TODO remove hardcoded row 0
-      boardCopy[0].pop();
+      boardCopy[action.value.guessIdx].pop();
       return boardCopy;
     }
     default: {
@@ -60,10 +63,8 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     boardReducer,
     Array.from(Array(ATTEMPTS), () => [])
   );
-  console.log(
-    "🚀 ~ file: GameContext.tsx ~ line 58 ~ GameProvider ~ board",
-    board
-  );
+
+  const [guessIdx, setGuessIdx] = useState(0);
 
   const [hasWon, setHasWon] = useState(false);
 
@@ -79,12 +80,13 @@ export const GameProvider = ({ children }: GameProviderProps) => {
         addLetter: (letter: string) => {
           dispatch({
             type: BoardActionTypes.Add,
-            value: letter,
+            value: { guessIdx, letter },
           });
         },
         removeLetter: () => {
           dispatch({
             type: BoardActionTypes.Remove,
+            value: { guessIdx },
           });
         },
         hasWon,
