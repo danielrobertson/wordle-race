@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 import { SpecialKeys } from "./constants";
 import { deleteKeySvg } from "./DeleteKey";
@@ -23,6 +23,17 @@ export default function Keyboard({
   ];
 
   const handleClick = (event: any) => onKey(event.target.textContent);
+  const handleKeydown = () => {
+    // TODO implement desktop keyboard support
+    alert(
+      "Desktop keyboard support coming soon! Please click the on-screen keyboard instead"
+    );
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  });
 
   return (
     <div className="mt-2 md:mt-8 mb-8 px-1 w-full md:max-w-min">
