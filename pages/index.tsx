@@ -3,7 +3,7 @@ import uniqueId from "lodash/uniqueId";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../components/constants";
+import { ATTEMPTS, SpecialKeys, WORD_LENGTH } from "../constants";
 import Keyboard from "../components/Keyboard";
 import Row from "../components/Row";
 import { useGame } from "../contexts/GameContext";

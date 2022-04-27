@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import classNames from "classnames";
-import { SpecialKeys } from "./constants";
+import { SpecialKeys } from "../constants";
 import { deleteKeySvg } from "./DeleteKey";
 
 type Props = {

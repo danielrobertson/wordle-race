@@ -1,6 +1,6 @@
 import cloneDeep from "lodash/cloneDeep";
 import { createContext, useContext, useReducer, useState } from "react";
-import { ATTEMPTS, WORD_LENGTH } from "../components/constants";
+import { ATTEMPTS, WORD_LENGTH } from "../constants";
 
 interface GameContextType {
   board: string[][];

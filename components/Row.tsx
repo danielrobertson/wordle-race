@@ -1,6 +1,6 @@
 import React from "react";
 import uniqueId from "lodash/uniqueId";
-import { WORD_LENGTH } from "./constants";
+import { WORD_LENGTH } from "../constants";
 import Tile from "./Tile";
 
 type Props = {

@@ -1,4 +1,4 @@
-import { SpecialKeys } from "./constants";
+import { SpecialKeys } from "../constants";
 
 export const deleteKeySvg = (
   <svg
