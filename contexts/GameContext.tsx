@@ -1,5 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 import { ATTEMPTS, WORD_LENGTH } from "../components/constants";
 
 interface GameContextType {
@@ -34,7 +34,7 @@ const boardReducer = (
   switch (action.type) {
     case BoardActionTypes.Add: {
       let boardCopy = cloneDeep(state);
-      // TODO put a type guard in here, or fix the types to remove this if-statement
+      // TODO put a type guard in here then remove this if-statement
       if (action.value) {
         // TODO remove hardcoded row 0
         boardCopy[0].push(action.value);
@@ -59,6 +59,8 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     Array.from(Array(ATTEMPTS), () => [])
   );
 
+  const [hasWon, setHasWon] = useState(false);
+
   return (
     <GameContext.Provider
       value={{
@@ -74,6 +76,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
             type: BoardActionTypes.Remove,
           });
         },
+        hasWon,
       }}
     >
       {children}

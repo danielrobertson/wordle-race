@@ -28,7 +28,7 @@ export default function Keyboard({
     <div className="mt-2 md:mt-8 mb-8 px-1 w-full md:max-w-min">
       {keyRows.map((row, rowIdx) => {
         const classes = classNames(
-          { "mx-3": rowIdx === 1 }, // indent second keyboard row like irl
+          { "mx-3": rowIdx === 1 }, // indent second keyboard row like real life keyboards
           "flex justify-center mt-1"
         );
 
