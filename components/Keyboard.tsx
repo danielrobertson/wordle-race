@@ -1,20 +1,30 @@
 import React, { useEffect } from "react";
 import classNames from "classnames";
+import { useGame } from "../contexts/GameContext";
 import { SpecialKeys } from "../constants";
 import { deleteKeySvg } from "./DeleteKey";
 
-type Props = {
-  onKey: (key: string) => void;
-};
+export default function Keyboard() {
+  const { addLetter, removeLetter, validateGuess } = useGame();
 
-export default function Keyboard({ onKey }: Props) {
   const keyRows = [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
     ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
     [SpecialKeys.ENTER, "z", "x", "c", "v", "b", "n", "m", deleteKeySvg],
   ];
 
-  const handleClick = (event: any) => onKey(event.target.textContent);
+  const handleClick = (event: any) => {
+    const key = event.target.textContent;
+    if (key === SpecialKeys.ENTER) {
+      // validate guess
+      validateGuess();
+    } else if (key === "") {
+      // backspace key
+      removeLetter();
+    } else {
+      addLetter(key);
+    }
+  };
 
   const handleKeydown = (event: KeyboardEvent) => {
     // TODO implement desktop keyboard support

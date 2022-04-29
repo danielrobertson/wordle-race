@@ -10,20 +10,9 @@ import { useGame } from "../contexts/GameContext";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function Home() {
-  const { addLetter, removeLetter, hasWon, validateGuess } = useGame();
+  // custom useGame hook maintains and drives most of the game state 👇
+  const { hasWon } = useGame();
   const { width, height } = useWindowDimensions();
-
-  const handleKeyboardPress = (key: string) => {
-    if (key === SpecialKeys.ENTER) {
-      // validate guess
-      validateGuess();
-    } else if (key === "") {
-      // backspace key
-      removeLetter();
-    } else {
-      addLetter(key);
-    }
-  };
 
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
@@ -42,7 +31,7 @@ export default function Home() {
           <Row guessIdx={i} key={uniqueId()} />
         ))}
 
-        <Keyboard onKey={handleKeyboardPress} />
+        <Keyboard />
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
