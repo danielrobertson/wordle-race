@@ -1,8 +1,8 @@
-# Wordle Race ⬛️🟨🟩
+# Wordle Race 🟩 🏁
 
 Wordle game rooms where the fastest to solve the puzzle wins 🏁 Inspired by [Wordle](https://www.powerlanguage.co.uk/wordle/)
 
-Try it live at https://www.wordlerace.fun
+🚧 In progress, but coming soon to https://www.wordlerace.fun
 
 ## Development
 
