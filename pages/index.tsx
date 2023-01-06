@@ -14,6 +14,14 @@ export default function Home() {
   const { hasWon } = useGame();
   const { width, height } = useWindowDimensions();
 
+  useEffect(
+    () =>
+      alert(
+        "🚧 this project is still in development, feel free to browse code in progress on GitHub"
+      ),
+    []
+  );
+
   return (
     <div className="flex flex-col p-0 m-0 items-center justify-center min-h-screen bg-slate-900 text-stone-200">
       <Head>
