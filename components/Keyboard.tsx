@@ -28,14 +28,6 @@ export default function Keyboard() {
 
   const handleKeydown = (event: KeyboardEvent) => {
     // TODO implement desktop keyboard support
-    if (
-      (event.key?.length === 1 && Boolean(event.key?.match(/[a-z]/i))) ||
-      event.key === "Backspace"
-    ) {
-      alert(
-        "Desktop keyboard support coming soon! Please click the on-screen keyboard instead"
-      );
-    }
   };
 
   useEffect(() => {
