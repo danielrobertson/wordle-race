@@ -11,9 +11,9 @@ import { ATTEMPTS, WORD_LENGTH } from "../constants";
 
 type Tile = {
   value: string;
-  guessedWrong: boolean;
-  guessedContains: boolean;
-  guessedCorrect: boolean;
+  isCorrect: boolean;
+  isInWord: boolean;
+  isLocked: boolean;
 };
 
 interface GameContextType {
@@ -41,11 +41,20 @@ type GameProviderProps = {
 enum BoardActionTypes {
   "Add",
   "Remove",
+  "Update",
 }
 
+// TODO split this up and type narrow via type guards for cleaner code
 type BoardReducerAction = {
   type: BoardActionTypes;
-  value: { guessIdx: number; letter?: string };
+  value: {
+    guessIdx: number;
+    tileIdx?: number;
+    letter?: string;
+    isCorrect?: boolean;
+    isInWord?: boolean;
+    isLocked?: boolean;
+  };
 };
 
 const boardReducer = (state: Tile[][], action: BoardReducerAction) => {
@@ -56,9 +65,9 @@ const boardReducer = (state: Tile[][], action: BoardReducerAction) => {
         if (action.value.letter) {
           const newTile = {
             value: action.value.letter,
-            guessedWrong: false,
-            guessedContains: false,
-            guessedCorrect: false,
+            isCorrect: false,
+            isInWord: true,
+            isLocked: false,
           } as Tile;
 
           boardCopy[action.value.guessIdx].push(newTile);
@@ -73,6 +82,18 @@ const boardReducer = (state: Tile[][], action: BoardReducerAction) => {
       boardCopy[action.value.guessIdx].pop();
       return boardCopy;
     }
+    case BoardActionTypes.Update: {
+      const { guessIdx, tileIdx, isCorrect, isInWord, isLocked } = action.value;
+      if (tileIdx !== undefined) {
+        let boardCopy = cloneDeep(state);
+        boardCopy[guessIdx][tileIdx].isCorrect = Boolean(isCorrect);
+        boardCopy[guessIdx][tileIdx].isInWord = Boolean(isInWord);
+        boardCopy[guessIdx][tileIdx].isLocked = Boolean(isLocked);
+        return boardCopy;
+      } else {
+        return state;
+      }
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -86,14 +107,13 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   );
 
   // TODO generate and persist to server for room
-  const [targetWord, setTargetWord] = useState();
+  const [targetWord, setTargetWord] = useState<string>();
   const [guessIdx, setGuessIdx] = useState(0);
   const [hasWon, setHasWon] = useState(false);
 
   useEffect(() => {
     const fetchTargetWord = async () => {
-      // TODO migrate this to a server
-      // TODO consider replacing with www.wordsapi.com
+      // TODO migrate this to a server, consider replacing with www.wordsapi.com
       const response = await fetch(
         `https://random-word-api.herokuapp.com/word?length=${WORD_LENGTH}`
       );
@@ -109,11 +129,31 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   const validateGuess = () => {
     const guess = board[guessIdx].map((tile) => tile.value).join("");
     if (guess.length === WORD_LENGTH) {
-      // TODO color tiles with hints
-      // TODO indicate if word is in word list or not
+      // TODO color tiles with hints, lock tiles, update guessIdx
+      for (let tileIdx = 0; tileIdx < WORD_LENGTH; tileIdx++) {
+        if (targetWord && guess[tileIdx] === targetWord[tileIdx]) {
+          dispatch({
+            type: BoardActionTypes.Update,
+            value: { guessIdx, tileIdx, isCorrect: true, isLocked: true },
+          });
+        } else if (targetWord && targetWord.includes(guess[tileIdx])) {
+          dispatch({
+            type: BoardActionTypes.Update,
+            value: { guessIdx, tileIdx, isInWord: true, isLocked: true },
+          });
+        } else {
+          dispatch({
+            type: BoardActionTypes.Update,
+            value: { guessIdx, tileIdx, isLocked: true },
+          });
+        }
+      }
+
       if (guess === targetWord) {
         setHasWon(true);
       }
+    } else {
+      alert("Please fill in all tiles");
     }
   };
 
