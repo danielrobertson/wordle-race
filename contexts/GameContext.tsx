@@ -114,11 +114,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   useEffect(() => {
     const fetchTargetWord = async () => {
       // TODO migrate this to a server, consider replacing with www.wordsapi.com
-      const response = await fetch(
-        `https://random-word-api.herokuapp.com/word?length=${WORD_LENGTH}`
-      );
-      const data = await response.json();
-      setTargetWord(data[0]);
+      setTargetWord("hello");
     };
 
     if (!targetWord) {
